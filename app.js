@@ -13,6 +13,8 @@ app.use(session({secret: 'library' }));
 
 const port = process.env.PORT || 3000;
 
+require('./src/config/passport.js')(app);
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use('/css', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/css')));
 app.use('/js', express.static(path.join(__dirname, '/node_modules/bootstrap/dist/js')));
@@ -22,8 +24,8 @@ app.set('views', './src/views');
 const nav = [
 ];
 
-const signUpRouter = require('./src/routes/signUpRoutes')(nav);
-app.use('/auth',signUpRouter);
+const authRouter = require('./src/routes/auth.js')(nav);
+app.use('/auth',authRouter);
 
 app.get('/',(req,res) => {
     res.render('signup.ejs');
