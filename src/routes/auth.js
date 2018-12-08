@@ -12,10 +12,28 @@ function router(nav) {
     authRouter.route('/signup')
     .post((req,res)=> {
         //create user
-        req.login(req.body, () => {
-            res.redirect('auth/profile');
-        });
-        // res.json(req.body);
+        const { username, password } = req.body;
+        const url = 'mongodb://localhost:27017';
+        const dbName = 'libraryApp';
+
+        (async function addUser() {
+            let client;
+            try {
+                client =  await MongoClient.connect(url);
+                console.log("Connected to the server");
+
+                const db = client.db(dbName);
+                const col = db.collection('users');
+                const user = { username, password };
+                const result = await col.insertOne(user);
+
+                req.login(result.ops[0], () => {
+                    res.redirect('/auth/profile');
+                });
+            }catch(err) {
+                console.log(err);
+            }
+        }());
     });
 
     authRouter.route('/profile')
