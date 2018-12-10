@@ -22,11 +22,13 @@ module.exports = function localStrategy() {
 
                     const user = await col.findOne({username});
 
-                    if(user.password === password) {
+                    if(user !=null && user.password === password) {
                         done(null, user);
                     }else {
-                        done(nul, false);
+                        done(null, false);
                     }
+                    
+                    console.log('-------------------'+user.password+'----'+password);
                 }catch(err) {
                     console.log(err);
                 }
